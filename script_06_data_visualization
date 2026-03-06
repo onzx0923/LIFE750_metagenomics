@@ -1,0 +1,6 @@
+# 1) Running Krona
+# .kreport2 matches all Kraken2 report files in the current directory
+ktImportTaxonomy -o kraken2.krona.html *.kreport2
+
+# 2) Visualising Krona plots
+firefox kraken2.krona.html &
