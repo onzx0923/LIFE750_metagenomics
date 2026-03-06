@@ -11,8 +11,6 @@ Repository Structure
 
 2) environment: Contains the Conda environment configuration file to ensure software reproducibility.
 
-3) results: Stores the final taxonomic abundance tables (e.g., BIOM files) and rendered high-resolution figures for the poster.
-
 Bioinformatics Workflow
 1) Quality Control: Raw sequence reads are trimmed and filtered for quality to remove adapters and low-quality bases.
 
