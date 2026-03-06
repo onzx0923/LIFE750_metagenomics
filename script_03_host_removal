@@ -1,0 +1,26 @@
+# 1) Reference preparation
+mkdir 2-5_Host_removed
+cd 2-5_Host_removed
+wget -r -np -nH --cut-dirs=3 -A "GRCh38_slice.fasta" https://cgr.liv.ac.uk/454/acdarby/LIFE750/
+
+# bowtie2
+# Indexing the reference
+bowtie2-build GRCh38_slice.fasta GRCh38_slice.fasta
+# Alignment to host genome
+bowtie2 -x GRCh38_slice.fasta   -1 ../K1_R1.fq.gz -2 ../K1_R2.fq.gz -p 12 2> K1_bowtie2_out.log | samtools view -b -S -h > K1_mapped.bam
+
+# Extracy reads that did not map to the host genome using samtools fast
+# -f 4 : only unmapped reads should be output
+samtools fastq -f 4   -1 ../K1_R1.u.fq   -2 ../K1_R2.u.fq   K1_mapped.bam
+
+# Re-pairing reads by remove unpaired reads using BBTools.
+repair.sh \
+  in1=../K1_R1.u.fq \
+  in2=../K1_R2.u.fq \
+  out1=K1_R1.final.fastq \
+  out2=K1_R2.final.fastq \
+  outs=K1_singletons.fastq
+
+# Note;
+# Host removal has been done for sample K1. Given the minimal human DNA content detected, this step will be omitted for the
+# remaining samples, and trimmed reads will be used directly for subsequent analyses.
