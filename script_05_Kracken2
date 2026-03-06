@@ -1,0 +1,38 @@
+# 1) define the location of the Kraken2 databases
+kraken2 \
+  --db ~/kraken2_db \
+  --threads 4 \
+  --report kraken_report.txt \
+  <path_to_reads.fastq> > kraken_output.txt
+
+# 2) Running Kracken2
+# Use trimmed reads to save time. In real analyses, should always use host-removed data.
+kraken2 --paired \
+  --db  ~/kraken2_db\
+  --output K1.kraken \
+  --report K1.kreport2 \
+  ~/2-Trimmed/K1_R1.fq.gz ~/2-Trimmed/K1_R2.fq.gz
+
+#K2
+kraken2 --paired --db ~/kraken2_db \
+--output K2.kraken --report K2.kreport2 \
+~/2-Trimmed/K2_R1.fq.gz ~/2-Trimmed/K2_R2.fq.gz
+
+#W1
+kraken2 --paired --db ~/kraken2_db \
+--output W1.kraken --report W1.kreport2 \
+~/2-Trimmed/W1_R1.fq.gz ~/2-Trimmed/W1_R2.fq.gz
+
+# 3) Output of Kracken2
+# a. Output file (.kraken)
+  # 1. Classification status: • C = classified • U = unclassified 2. Sequence ID from the FASTQ header 
+  # 3. Assigned taxonomy ID (0 if unclassified) 4. Sequence length in base pairs • Paired reads are reported as R1|R2 (e.g. 98|94) 
+  # 5. Lowest common ancestor (LCA) mapping of k-mers
+# b. Report file (.kreport2)
+  # summarises taxonomic classification and is required for Bracken
+  # 1. Percentage of paired reads assigned to the clade 2. Number of paired reads assigned to the clade 
+  # 3. Number of paired reads assigned directly to the taxon 4. Rank code (U, R, D, K, P, C, O, F, G, S) 5. NCBI taxonomic ID 
+  # 6. Scientific name (indented by taxonomic depth)
+
+
+
