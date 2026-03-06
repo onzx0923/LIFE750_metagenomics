@@ -1,0 +1,26 @@
+# 1) Obtaining data
+mkdir 1-Raw
+cd 1-Raw
+
+wget -r -np -nH --cut-dirs=3 -A "*.fastq.gz" https://cgr.liv.ac.uk/454/acdarby/LIFE750/
+#return to home 
+
+# 2) Inspect the first few lines of a FASTQ file
+zcat K1_R1.fastq.gz | head -n 4 | less -S
+
+# 3) Running FastQC
+mkdir R1_fastqc
+fastqc -t 3 -o R1_fastqc *R1.fastq.gz
+
+mkdir R2_fastqc
+fastqc -t 3 -o R2_fastqc *R2.fastq.gz
+
+# 4) Summarising with MultiQC
+mkdir R1_fastqc/multiqc
+multiqc -o R1_fastqc/multiqc R1_fastqc
+
+mkdir R2_fastqc/multiqc
+multiqc -o R2_fastqc/multiqc R2_fastqc
+
+firefox R1_fastqc/multiqc/multiqc_report.html \
+R2_fastqc/multiqc/multiqc_report.html &
