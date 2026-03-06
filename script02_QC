@@ -1,0 +1,34 @@
+# 1) Removing adapters and low-quality bases
+cd 
+mkdir 2-Trimmed
+cd 2-Trimmed
+
+# Using trim galoze : Trims low-quality bases from the ends of reads (quality score < 20) 
+# Removes adapter sequences if four or more bases are detected
+trim_galore --paired --quality 20 --stringency 4 \
+../1-Raw/K1_R1.fastq.gz ../1-Raw/K1_R2.fastq.gz
+
+trim_galore --paired --quality 20 --stringency 4 \
+../1-Raw/K2_R1.fastq.gz ../1-Raw/K2_R2.fastq.gz
+
+trim_galore --paired --quality 20 --stringency 4 \
+../1-Raw/W1_R1.fastq.gz ../1-Raw/W1_R2.fastq.gz
+
+# Rename
+mv K1_R1_val_1.fq.gz K1_R1.fq.gz
+mv K1_R2_val_2.fq.gz K1_R2.fq.gz
+mv K2_R1_val_1.fq.gz K2_R1.fq.gz
+mv K2_R2_val_2.fq.gz K2_R2.fq.gz
+mv W1_R1_val_1.fq.gz W1_R1.fq.gz
+mv W1_R2_val_2.fq.gz W1_R2.fq.gz
+
+# 2) R1 & R2 FastQC and Multi QC
+mkdir R1_fastqc
+fastqc -t 3 -o R1_fastqc *R1.fq.gz
+mkdir R1_fastqc/multiqc
+multiqc -o R1_fastqc/multiqc R1_fastqc
+
+mkdir R2_fastqc
+fastqc -t 3 -o R2_fastqc *R2.fq.gz
+mkdir R2_fastqc/multiqc
+multiqc -o R2_fastqc/multiqc R2_fastqc
