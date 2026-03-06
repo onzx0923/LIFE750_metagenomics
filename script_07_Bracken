@@ -1,0 +1,63 @@
+# 1) Run Bracken with Kraken2 report
+bracken -d ~/kraken2_db/\
+  -i K1.kreport2 \
+  -o K1.bracken \
+  -w K1.breport2 \
+  -r 100 \
+  -l S \
+  -t 5
+
+  # K2
+bracken -d ~/kraken2_db/ \
+  -i K2.kreport2 \
+  -o K2.bracken \
+  -r 100 \
+  -l S \
+  -t 5
+
+# W1
+bracken -d ~/kraken2_db/ \
+  -i W1.kreport2 \
+  -o W1.bracken \
+  -r 100 \
+  -l S \
+  -t 5
+
+# Parameters
+# -d
+  #Specifies the Kraken2 database used for classification.
+  #Bracken requires the full path to the database; here we use the KRAKEN2_DB_PATH environment variable.
+# -i
+  #Kraken2 report file used as input.
+# -o
+  #Output Bracken file.
+# -w
+  #Output report file in Kraken-style format.
+  #This file is required for downstream analysis in R (e.g. using phyloseq).
+# -r 100
+  # Read length used during Kraken2 classification.
+  #We use 100 bp as the original library consisted of paired-end 100 bp reads.
+# -l S
+  #Taxonomic rank for abundance estimation.
+  #Other valid options include D, P, C, O, F, and G.
+# -t 5
+  #Minimum number of reads required for classification at the specified rank.
+
+# 2) Bracken output
+# Name – Taxon name at the specified rank
+# Taxonomy ID – NCBI taxonomy identifier
+# Level ID – Taxonomic rank code
+# Kraken-assigned reads
+# Reads added by abundance reestimation
+# Total reads after abundance reestimation
+# Fraction of total reads
+
+# 3) Merging Bracken output
+combine_bracken_outputs.py --files [KW]*.bracken -o all.bracken
+
+# 4) Extracting abundance columns
+seq -s , 4 2 50
+bracken_num_columns=$(seq -s , 4 2 50)
+echo $bracken_num_columns
+# Extract the first column and all bracken_num columns
+cut -f 1,$bracken_num_columns all.bracken > all_num.bracken
