@@ -18,8 +18,8 @@ Bioinformatics Workflow
 
 3) Abundance Re-estimation: Bracken is utilized downstream of Kraken 2 to probabilistically re-estimate true taxonomic abundance at the species level.
 
-4) Data Visualization: The resulting abundance profiles are imported into R to generate compositional stacked bar charts, differential heat trees, and beta diversity ordinations.
-
+4) Data Visualization
+   
 Instructions for Reproducibility
 1) Clone this repository to your local machine or the HPC environment.
 
@@ -27,4 +27,3 @@ Instructions for Reproducibility
 
 3) Execute the bash scripts in the scripts/ directory sequentially to perform quality control, Kraken 2 classification, and Bracken re-estimation.
 
-4) Run the R visualization script to generate the final figures from the Bracken outputs.
