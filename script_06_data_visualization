@@ -4,3 +4,15 @@ ktImportTaxonomy -o kraken2.krona.html *.kreport2
 
 # 2) Visualising Krona plots
 firefox kraken2.krona.html &
+
+# 3) Install Pavian in Rstudio console
+if (!require(remotes)) { install.packages("remotes") }
+remotes::install_github("fbreitwieser/pavian")
+
+# 4) Launch Pavian
+pavian::runApp(port=5000)
+
+# 5) Import Kracken2 report files
+K1.kreport2
+K2.kreport2
+W1.kreport2
