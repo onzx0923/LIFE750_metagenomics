@@ -4,25 +4,33 @@ library(tidyr)
 
 pavian_data <- read.delim("LIFE750pre3.tsv", sep = "\t", stringsAsFactors = FALSE)
 
-# 1. Find the top 20 most abundant Genera
+# 1. Find the top 20 most abundant genera
 heat_data <- pavian_data %>%
+  # Only genus taxonomic rank
   filter(taxRank == "G") %>%
+  Select the needed column and rename
   select(name, K1 = K1.cladeReads, K2 = K2.cladeReads, W1 = W1.cladeReads) %>%
+  # Replace NA values with 0  (missing read counts = zero abundance)
   replace(is.na(.), 0) %>%
+  # Calculate the total reads for each genus across all samples
   mutate(Total = K1 + K2 + W1) %>%
+  # Sort otal reads in descending order
   arrange(desc(Total)) %>%
   head(20)
 
-# 3. Convert data to "Long" format and calculate relative percentages
+# 3. Convert data to long format and calculate relative percentages
 heat_long <- heat_data %>%
+  # Remove total column
   select(-Total) %>%
+  # Wide to long format
   pivot_longer(cols = c("K1", "K2", "W1"), names_to = "Sample", values_to = "Reads") %>%
   group_by(Sample) %>%
+  # Add a column that calculate relative abundance
   mutate(Rel_Abund = (Reads / sum(Reads)) * 100)
 
-# 4. Generate the Heatmap Plot
+# 4. Generate the heatmap 
 heatmap_plot <- ggplot(heat_long, aes(x = Sample, y = reorder(name, Rel_Abund), fill = Rel_Abund)) +
-  geom_tile(color = "white", size = 1) + # Adds clean white borders between the tiles
+  geom_tile(color = "white", size = 1) + # Adds clean white border between the tiles
   # magma palette: dark for low abundance, bright for high abundance
   scale_fill_viridis_c(option = "magma", name = "Relative\nAbundance (%)") +
   theme_minimal(base_size = 18) +
