@@ -3,10 +3,9 @@ library(dplyr)
 
 pavian_data <- read.delim("LIFE750pre3.tsv", sep = "\t", stringsAsFactors = FALSE)
 
-# 2. Clean data, filter for bacteria only, and calculate Log2FC
+# 1. Clean data, filter for bacteria only, and calculate Log2FC
 fc_data <- pavian_data %>%
-  # Filter strictly to the Genus level and ensure the lineage contains "Bacteria"
-  # This automatically removes "Homo" (Eukaryota) and Viruses
+  # Filter to genus level lineage contain "bacteria" only to remove "Homo" (Eukaryota) and viruses
   filter(taxRank == "G" & grepl("Bacteria", lineage)) %>%
   select(name, K1 = K1.cladeReads, K2 = K2.cladeReads, W1 = W1.cladeReads) %>%
   replace(is.na(.), 0) %>%
@@ -16,18 +15,21 @@ fc_data <- pavian_data %>%
     Log2FC = log2(Western / Korean_Mean),
     Total_Reads = K1 + K2 + W1
   ) %>%
-  # Keep only meaningful abundances
+  # Keep only meaningful abundances: keeps only genera with more than 100 reads
   filter(Total_Reads > 100) %>% 
+  # Sort genera by strongest difference
   arrange(desc(abs(Log2FC))) %>%
   head(20)
 
 # 3. Create the enrichment category
 fc_data <- fc_data %>%
+  # Log2FC > 0 = western, otherwise korean
   mutate(Enriched_In = ifelse(Log2FC > 0, "Western Diet", "Korean Diet"))
 
 # 4. Generate the Plot
 fc_plot_clean <- ggplot(fc_data, aes(x = reorder(name, Log2FC), y = Log2FC, fill = Enriched_In)) +
   geom_bar(stat = "identity", color = "black", alpha = 0.9) +
+  # Swap x and y axes
   coord_flip() + 
   theme_bw(base_size = 18) + 
   scale_fill_manual(values = c("Western Diet" = "#d73027", "Korean Diet" = "#4575b4")) +
